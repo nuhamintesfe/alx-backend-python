@@ -12,7 +12,7 @@ This project contains a Python script that:
 
 ## 📦 Folder Structure
 
-python generator project/
+project-folder/
 │
 ├── seed.py           # Python script for DB setup and data seeding
 ├── user_data.csv     # Input CSV file (name, email, age)
