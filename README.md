@@ -13,10 +13,10 @@ This project contains a Python script that:
 ## 📦 Folder Structure
 
 python generator project/
-|
-|- seed.py # Python script that handles DB setup and data seeding
-|- user_data.csv # Your input data file (name, email, age)
-|- README.md # This readme file
+│
+├── seed.py           # Python script for DB setup and data seeding
+├── user_data.csv     # Input CSV file (name, email, age)
+└── README.md         # This file
 
 
 ---
