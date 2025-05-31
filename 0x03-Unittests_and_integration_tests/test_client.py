@@ -1,64 +1,69 @@
 #!/usr/bin/env python3
 """
-Integration test for GithubOrgClient.public_repos
+Unit test for GithubOrgClient.public_repos
 """
 
 import unittest
-from unittest.mock import patch, Mock
-from parameterized import parameterized_class
+from unittest.mock import patch, PropertyMock
+from parameterized import parameterized
 from client import GithubOrgClient
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
-@parameterized_class([
-    {
-        "org_payload": org_payload,
-        "repos_payload": repos_payload,
-        "expected_repos": expected_repos,
-        "apache2_repos": apache2_repos
-    }
-])
-class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration tests with fixtures"""
+class TestGithubOrgClient(unittest.TestCase):
+    """Unit tests for GithubOrgClient"""
 
-    @classmethod
-    def setUpClass(cls):
-        """Set up class-wide patching of requests.get"""
-        cls.get_patcher = patch('requests.get')
-        cls.mock_get = cls.get_patcher.start()
+    @parameterized.expand([
+        ("google", {"login": "google"}),
+        ("abc", {"login": "abc"}),
+    ])
+    @patch('client.get_json')
+    def test_org(self, org_name, expected, mock_get_json):
+        """Test org method"""
+        mock_get_json.return_value = expected
+        client = GithubOrgClient(org_name)
+        self.assertEqual(client.org(), expected)
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
 
-        def side_effect(url, *args, **kwargs):
-            if url == "https://api.github.com/orgs/google":
-                mock_resp = Mock()
-                mock_resp.json.return_value = cls.org_payload
-                return mock_resp
-            elif url == cls.org_payload.get("repos_url"):
-                mock_resp = Mock()
-                mock_resp.json.return_value = cls.repos_payload
-                return mock_resp
-            return Mock(json=lambda: {})
+    def test_public_repos_url(self):
+        """Test _public_repos_url property"""
+        with patch.object(GithubOrgClient, 'org',
+                          new_callable=PropertyMock) as mock_org:
+            mock_org.return_value = {
+                "repos_url": "https://api.github.com/orgs/test/repos"
+            }
+            client = GithubOrgClient("test")
+            self.assertEqual(client._public_repos_url,
+                             "https://api.github.com/orgs/test/repos")
 
-        cls.mock_get.side_effect = side_effect
-
-    @classmethod
-    def tearDownClass(cls):
-        """Stop patching"""
-        cls.get_patcher.stop()
-
-    @patch("requests.get")
-    def test_public_repos(self, mock_get):
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get_json):
         """Test public_repos method output"""
-        mock_get.return_value.json.side_effect = [
-            self.org_payload,
-            self.repos_payload
+        mock_get_json.side_effect = [
+            {"repos_url": "https://api.github.com/orgs/google/repos"},
+            [
+                {"name": "repo1", "license": {"key": "apache-2.0"}},
+                {"name": "repo2", "license": {"key": "mit"}},
+                {"name": "repo3", "license": {"key": "apache-2.0"}}
+            ]
         ]
         client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(), self.expected_repos)
+        self.assertEqual(client.public_repos(),
+                         ["repo1", "repo2", "repo3"])
 
-    def test_public_repos_with_license(self):
-        """Test filtering repos by license"""
+    @patch('client.get_json')
+    def test_public_repos_with_license(self, mock_get_json):
+        """Test public_repos filtered by license"""
+        mock_get_json.side_effect = [
+            {"repos_url": "https://api.github.com/orgs/google/repos"},
+            [
+                {"name": "repo1", "license": {"key": "apache-2.0"}},
+                {"name": "repo2", "license": {"key": "mit"}},
+                {"name": "repo3", "license": {"key": "apache-2.0"}},
+                {"name": "repo4", "license": {"key": "gpl"}}
+            ]
+        ]
         client = GithubOrgClient("google")
-        self.assertEqual(
-            client.public_repos(license="apache-2.0"),
-            self.apache2_repos
-        )
+        self.assertEqual(client.public_repos(license="apache-2.0"),
+                         ["repo1", "repo3"])
