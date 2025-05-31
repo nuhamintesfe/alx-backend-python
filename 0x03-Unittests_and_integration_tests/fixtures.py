@@ -1,4 +1,24 @@
 #!/usr/bin/env python3
+# fixtures.py
+
+org_payload = {
+    "repos_url": "https://api.github.com/orgs/google/repos"
+}
+
+repos_payload = [
+    {
+        "name": "episodes.dart",
+        "license": {"key": "apache-2.0"}
+    },
+    {
+        "name": "youtube-data",
+        "license": {"key": "mit"}
+    }
+]
+
+expected_repos = ["episodes.dart", "youtube-data"]
+
+apache2_repos = ["episodes.dart"]
 
 TEST_PAYLOAD = [
   (
