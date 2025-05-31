@@ -25,5 +25,6 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('chats.urls')),
-    path('', home),  # This adds a homepage
+    path('', home),  
+    path('api-auth/', include('rest_framework.urls')), 
 ]
