@@ -26,6 +26,17 @@ class TestGithubOrgClient(unittest.TestCase):
             f"https://api.github.com/orgs/{org_name}"
         )
 
+    @parameterized.expand([
+        ({"license": {"key": "apache-2.0"}}, "apache-2.0", True),
+        ({"license": {"key": "mit"}}, "apache-2.0", False),
+        ({}, "apache-2.0", False),
+        ({"license": {}}, "apache-2.0", False),
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        """Test the has_license static method"""
+        result = GithubOrgClient.has_license(repo, license_key)
+        self.assertEqual(result, expected)
+
     def test_public_repos_url(self):
         """Test _public_repos_url property"""
         with patch.object(GithubOrgClient, 'org',
