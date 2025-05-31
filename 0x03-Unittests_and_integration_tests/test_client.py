@@ -20,7 +20,8 @@ from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests with fixtures"""
-
+    def test_dummy(self):
+        self.assertTrue(True)
     @classmethod
     def setUpClass(cls):
         cls.get_patcher = patch('requests.get')
