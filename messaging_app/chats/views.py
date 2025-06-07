@@ -12,6 +12,12 @@ from .serializers import ConversationSerializer, MessageSerializer, BookSerializ
 from .permissions import IsParticipantOfConversation
 from .filters import MessageFilter
 >>>>>>> 9495c56 (Update messaging_app with filters and views)
+from .pagination import MessagePagination
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    pagination_class = MessagePagination  # Use the pagination here
 
 # Conversation ViewSet
 class ConversationViewSet(viewsets.ModelViewSet):
