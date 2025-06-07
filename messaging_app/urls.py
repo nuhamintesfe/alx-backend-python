@@ -14,26 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # JWT auth endpoints
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # Include your app's routes (update if your app name is not 'chats')
-    path('api/', include('chats.urls')),
-<<<<<<< HEAD
-    path('', home),  
-    path('api-auth/', include('rest_framework.urls')), 
-=======
->>>>>>> 9495c56 (Update messaging_app with filters and views)
 ]
