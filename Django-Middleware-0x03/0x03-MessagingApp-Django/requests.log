@@ -1,5 +1,0 @@
-2025-06-07 10:15:21,534 - INFO - User: Anonymous - Path: /
-2025-06-07 10:15:25,678 - INFO - User: testuser - Path: /api/messages
-2025-06-07 10:16:02,112 - INFO - User: admin - Path: /admin/login/
-2025-06-07 10:17:45,345 - INFO - User: moderator - Path: /api/messages/send
-2025-06-07 10:18:59,237 - INFO - User: Anonymous - Path: /api/info
