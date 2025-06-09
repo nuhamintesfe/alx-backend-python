@@ -3,6 +3,17 @@ from django.utils.decorators import method_decorator
 from rest_framework import generics
 from .models import Message
 from .serializers import MessageSerializer
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.http import HttpResponse
+
+@login_required
+def delete_user(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()
+        return HttpResponse("Your account has been deleted successfully.")
+    return HttpResponse("Send a POST request to delete your account.")
 
 @method_decorator(cache_page(60), name='dispatch')
 class ConversationMessagesView(generics.ListAPIView):
