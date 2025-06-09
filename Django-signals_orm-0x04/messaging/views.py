@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 @login_required
 def unread_inbox(request):
-    unread_messages = Message.unread.unread_for_user(request.user)  # ✅ Fixes check for "Message.unread.unread_for_user"
+    unread_messages = Message.unread.unread_for_user(request.user).only('id', 'sender', 'content', 'timestamp')  
     return render(request, 'unread_inbox.html', {'unread_messages': unread_messages})
 
 @login_required
