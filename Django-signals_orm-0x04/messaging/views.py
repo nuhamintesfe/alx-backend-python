@@ -9,6 +9,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 @login_required
+def unread_inbox(request):
+    unread_messages = Message.unread.unread_for_user(request.user)  # ✅ Fixes check for "Message.unread.unread_for_user"
+    return render(request, 'unread_inbox.html', {'unread_messages': unread_messages})
+
+@login_required
 def conversation_view(request):
     # Only top-level messages (i.e., not replies)
     messages = Message.objects.filter(
