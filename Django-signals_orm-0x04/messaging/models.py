@@ -18,6 +18,15 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     objects = models.Manager()
     unread = UnreadMessagesManager()
+    parent_message = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='replies',
+        on_delete=models.CASCADE
+    )
+    def __str__(self):
+        return f"{self.sender.username} → {self.receiver.username}: {self.content[:30]}"
 
 class Notification(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")

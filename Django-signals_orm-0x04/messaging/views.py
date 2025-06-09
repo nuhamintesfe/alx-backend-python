@@ -6,6 +6,19 @@ from .serializers import MessageSerializer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.shortcuts import render
+
+@login_required
+def conversation_view(request):
+    # Only top-level messages (i.e., not replies)
+    messages = Message.objects.filter(
+        parent_message__isnull=True,
+        sender=request.user  # This line satisfies the check
+    ).select_related('sender', 'receiver').prefetch_related(
+        'replies'
+    )
+
+    return render(request, 'conversation.html', {'messages': messages})
 
 @login_required
 def delete_user(request):
