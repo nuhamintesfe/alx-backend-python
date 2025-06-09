@@ -12,7 +12,7 @@ def save_message_revision(sender, instance, **kwargs):
     if instance.pk:
         orig = Message.objects.get(pk=instance.pk)
         if orig.content != instance.content:
-            MessageHistory.objects.create(message=instance, old_content=orig.content)
+            MessageHistory.objects.create(message=instance, old_content=orig.content, edited_by=instance.sender)
             instance.edited = True
 
 @receiver(post_delete, sender=settings.AUTH_USER_MODEL)
