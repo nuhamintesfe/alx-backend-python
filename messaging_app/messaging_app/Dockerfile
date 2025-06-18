@@ -1,19 +1,22 @@
+# Use Python 3.10 base image
 FROM python:3.10
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
+# Set working directory in the container
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    default-libmysqlclient-dev gcc netcat \
-    && rm -rf /var/lib/apt/lists/*
+# Copy requirements.txt first to leverage Docker cache
+COPY requirements.txt .
 
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-COPY . /app/
+# Copy all project files into container
+COPY . .
 
+# Expose Django default port 8000
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Command to run Django development server
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
