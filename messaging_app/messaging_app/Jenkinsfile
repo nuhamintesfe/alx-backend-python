@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git credentialsId: 'github-creds', url: 'https://github.com/nuhamintesfe/alx-backend-python.git'
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                sh 'pip install -r messaging_app/requirements.txt'
+            }
+        }
+
+        stage('Run tests') {
+            steps {
+                sh 'pytest messaging_app --junitxml=report.xml'
+            }
+        }
+    }
+}
