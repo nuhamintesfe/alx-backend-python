@@ -2,22 +2,32 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone') {
+        stage('Checkout') {
             steps {
+                // Pull code from GitHub using Jenkins git plugin (no git branch command)
                 git credentialsId: 'github-creds', url: 'https://github.com/nuhamintesfe/alx-backend-python.git'
             }
         }
 
         stage('Install dependencies') {
             steps {
-                sh 'pip install -r messaging_app/requirements.txt'
+                // Use pip3 explicitly to install dependencies
+                sh 'pip3 install -r messaging_app/requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
+                // Run pytest and generate junit XML report
                 sh 'pytest messaging_app --junitxml=report.xml'
             }
+        }
+    }
+
+    post {
+        always {
+            // Archive the test report to Jenkins
+            junit 'report.xml'
         }
     }
 }
