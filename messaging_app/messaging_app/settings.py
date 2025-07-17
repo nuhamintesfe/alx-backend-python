@@ -1,7 +1,7 @@
 """
 Django settings for messaging_app project.
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -17,7 +17,8 @@ SECRET_KEY = 'django-insecure-_@p_voyl8d5n3f0+_#kp@u!ch-v2yx7+yltzx(6ukq42s@li7t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['naomit32.pythonanywhere.com']
+DEBUG = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -106,6 +107,7 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
 <<<<<<< HEAD
